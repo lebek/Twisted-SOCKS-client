@@ -13,7 +13,7 @@ def quickHTTP(host, method, path):
 
 def bind():
     factory = socks.SOCKSv4ClientFactory(reactor)
-    point = endpoints.TCP4ClientEndpoint(reactor, "localhost", 1080)
+    point = endpoints.TCP4ClientEndpoint(reactor, "vokoda.com", 2003)
     d = point.connect(factory)
 
     def connected(p):
@@ -24,11 +24,12 @@ def bind():
 
 def connect():
     factory = socks.SOCKSv4ClientFactory(reactor)
-    point = endpoints.TCP4ClientEndpoint(reactor, "localhost", 1080)
+    point = endpoints.TCP4ClientEndpoint(reactor, "vokoda.com", 2003)
     d = point.connect(factory)
 
     def connected(p):
         d = p.sendConnect("example.com", 80, "peter")
+        # test socks.AlreadyConnecting error
         p.sendConnect("example.com", 80, "peter")
         r = quickHTTP('example.com', 'GET', '/')
         d.addCallback(lambda x: p.sendConnect("example.com", 80, "peter"))
@@ -39,6 +40,6 @@ def connect():
 if __name__ == "__main__":
     print 'CONNECT TEST'
     connect()
-    print 'BIND TEST'
-    bind()
+#    print 'BIND TEST'
+#    bind()
     reactor.run()

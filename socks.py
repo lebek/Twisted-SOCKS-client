@@ -161,7 +161,6 @@ class SOCKSv4(protocol.Protocol):
             d = self.connectClass(server, port, SOCKSv4Outgoing, self)
             d.addErrback(lambda result, self = self: self.makeReply(91))
         elif code == 2: # BIND
-            import pdb; pdb.set_trace()
             d = self.listenClass(0, SOCKSv4IncomingFactory, self, server)
             d.addCallback(lambda (h, p),
                           self = self: self.makeReply(90, 0, p, h))
@@ -274,11 +273,6 @@ class AlreadyBound(SOCKSError):
     pass
 
 
-
-from binascii import hexlify
-prettyHex = lambda x: ' '.join(['0x'+hexlify(i) for i in x])
-
-
 class SOCKSv4Client(protocol.Protocol):
     """
     SOCKSv4(a) client protocol.
@@ -301,12 +295,10 @@ class SOCKSv4Client(protocol.Protocol):
 
 
     def _write(self, data):
-        print '->', prettyHex(data)
         self.transport.write(data)
 
 
     def dataReceived(self, data):
-        print '<-', prettyHex(data)
         self.buf += data
 
         if len(self.buf) >= 8:
